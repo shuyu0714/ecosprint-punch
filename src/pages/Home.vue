@@ -17,7 +17,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import Button from '../components/Button.vue';
 
-const API_URL = import.meta.env.API_HOST_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_HOST_URL;
 
 const currentDate = ref('');
 const currentTime = ref('');
@@ -67,7 +67,7 @@ const punchOut = async () => {
   }
   try {
     const position = await getCurrentPosition();
-    const response = await axios.post(API_URL, {
+    const response = await axios.post(`${API_URL}/punch`, {
       type: '下班',
       date: currentDate.value,
       time: currentTime.value,
@@ -119,5 +119,6 @@ onMounted(() => {
   updateDateTime();
   setInterval(updateDateTime, 1000);
   checkPunchInStatus();
+  console.log(import.meta.env);
 });
 </script>
