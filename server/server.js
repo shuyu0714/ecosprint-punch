@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 // 在生產環境中，您可能只想允許特定的源
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? 'http://shuyu0714.github.io/ecosprint-punch' 
+    ? 'https://shuyu0714.github.io/ecosprint-punch' 
     : 'http://localhost:5173',
   optionsSuccessStatus: 200
 };
