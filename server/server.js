@@ -15,7 +15,7 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 const dataFile = path.join(__dirname, 'list.json');
@@ -32,8 +32,15 @@ app.post('/api/punch', async (req, res) => {
     } catch (error) {
       // 如果文件不存在或為空，就創建一個新的數組
     }
-    
-    data.push({ type, date, time, location });
+
+    // Check if there is already a punch-in for today
+    const todayRecords = data.filter(record => record.date === date);
+    const punchInRecord = todayRecords.find(record => record.type === '上班');
+    if (type === '上班' && punchInRecord) {
+      return res.status(400).json({ success: false, message: '今天已經打過上班卡' });
+    }
+
+    data.push({ id: Date.now(), type, date, time, location }); // 添加唯一 ID
     
     await fs.writeFile(dataFile, JSON.stringify(data, null, 2));
     

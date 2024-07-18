@@ -100,8 +100,24 @@ const getCurrentPosition = () => {
   });
 };
 
+const checkPunchInStatus = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/records`);
+    const records = response.data;
+    const todayRecords = records.filter(record => record.date === currentDate.value);
+    const punchInRecord = todayRecords.find(record => record.type === '上班');
+    if (punchInRecord) {
+      hasPunchedIn.value = true;
+      lastPunchInTime.value = new Date(punchInRecord.time);
+    }
+  } catch (error) {
+    console.error('Error checking punch-in status:', error);
+  }
+};
+
 onMounted(() => {
   updateDateTime();
   setInterval(updateDateTime, 1000);
+  checkPunchInStatus();
 });
 </script>

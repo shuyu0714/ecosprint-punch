@@ -7,6 +7,9 @@
     <div v-else-if="error" class="text-center text-red-500">
       <p>{{ error }}</p>
     </div>
+    <div v-else-if="records.length === 0" class="text-center">
+      <p>暫無資料</p>
+    </div>
     <div v-else>
       <table class="w-full border-collapse border border-gray-300">
         <thead>
@@ -50,10 +53,11 @@ const fetchRecords = async () => {
     console.log('Fetching records from:', `${API_URL}/records`);
     const response = await axios.get(`${API_URL}/records`);
     records.value = response.data;
-    loading.value = false;
   } catch (err) {
     console.error('獲取記錄失敗:', err);
     error.value = '獲取記錄失敗，請稍後再試。';
+    records.value = [];
+  } finally {
     loading.value = false;
   }
 };
