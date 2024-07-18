@@ -38,7 +38,7 @@
   </div>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
@@ -53,6 +53,32 @@ const fetchRecords = async () => {
     console.log('Fetching records from:', `${API_URL}/records`);
     const response = await axios.get(`${API_URL}/records`);
     records.value = response.data;
+  } catch (err) {
+    console.error('獲取記錄失敗:', err);
+    error.value = '獲取記錄失敗，請稍後再試。';
+    records.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchRecords();
+});
+</script> -->
+<script setup>
+import { ref, onMounted } from 'vue';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase'; // 确保导入路径正确
+
+const records = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const fetchRecords = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'punches'));
+    records.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (err) {
     console.error('獲取記錄失敗:', err);
     error.value = '獲取記錄失敗，請稍後再試。';
